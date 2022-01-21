@@ -84,11 +84,11 @@ def main():
     if args.login:
         _spawn_cli_for_auth(profile, args.docker)
 
-    _set_profile_credentials(profile, args.use_default if profile != 'default' else False)
+    _set_profile_credentials(profile, args.profile, args.use_default if profile != 'default' else False)
 
 
-def _set_profile_credentials(profile_name, use_default=False):
-    profile_opts = _get_aws_profile(profile_name)
+def _set_profile_credentials(profile_section_name, profile_name, use_default=False):
+    profile_opts = _get_aws_profile(profile_section_name)
     cache_login = _get_sso_cached_login(profile_opts)
     credentials = _get_sso_role_credentials(profile_opts, cache_login)
 
@@ -96,7 +96,7 @@ def _set_profile_credentials(profile_name, use_default=False):
         _store_aws_credentials(profile_name, profile_opts, credentials)
     else:
         _store_aws_credentials('default', profile_opts, credentials)
-        _copy_to_default_profile(profile_name)
+        _copy_to_default_profile(profile_section_name)
 
 
 def _get_aws_profile(profile_name):
